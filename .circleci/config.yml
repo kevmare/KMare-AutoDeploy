@@ -1,5 +1,9 @@
 version: 2.1
 
+orbs:
+  aws-cli: circleci/aws-cli@2.0.6
+  node: circleci/node@5.0.0
+
 commands:
 
   install_nodejs_latest:
@@ -59,13 +63,14 @@ commands:
               cd ~/project/backend
               npm install
               npm run migrations:revert
-            
+            else
+              echo "Not reverting migration: it was unsuccessful before"
             fi
 
 jobs:
   build-frontend:
     docker:
-      - image: circleci/node:14.18.1
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -79,9 +84,10 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+
   build-backend:
     docker:
-      - image: circleci/node:14.18.1
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -99,7 +105,9 @@ jobs:
   test-frontend:
     docker:
       # Docker image here
-      - image: circleci/node:14.18.1
+      #- image: cimg/node:16.13.1
+      - image: cimg/node:16.13.1
+    resource_class: medium
     steps:
       - checkout
       - restore_cache:
@@ -114,7 +122,9 @@ jobs:
   test-backend:
     docker:
       # Docker image here
-      - image: circleci/node:14.18.1
+      #- image: circleci/node:14.18.1
+      - image: cimg/node:16.13.1
+    resource_class: medium
     steps:
       - checkout
       - restore_cache:
@@ -129,7 +139,9 @@ jobs:
   scan-frontend:
     docker:
       # Docker image here
-      - image: circleci/node:14.18.1
+      #- image: circleci/node:14.18.1
+      - image: cimg/node:16.13.1
+    resource_class: medium
     steps:
       - checkout
       - restore_cache:
@@ -150,7 +162,9 @@ jobs:
   scan-backend:
     docker:
       # Docker image here
-      - image: circleci/node:13.8.0
+      #- image: circleci/node:13.8.0
+      - image: cimg/node:16.13.1
+    resource_class: medium
     steps:
       - checkout
       - restore_cache:
@@ -239,7 +253,7 @@ jobs:
 
   run-migrations:  
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:14.18.1
     steps:
       - checkout
       - attach_workspace:
