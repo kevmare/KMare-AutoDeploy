@@ -208,7 +208,6 @@ jobs:
       - run:
           name: Run migrations
           command: |
-            # Your code here
             cd backend
 		        npm install
             npm run build
