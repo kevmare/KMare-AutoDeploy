@@ -124,9 +124,11 @@ jobs:
     docker:
       # Docker image here that supports AWS CLI
       - image: amazon/aws-cli
-      - run: yum install -y targzip
+      
     steps:
       # Checkout code from git
+      - checkout
+      - run: yum install -y targzip
       - run:
           name: Ensure back-end infrastructure exists
           command: |
