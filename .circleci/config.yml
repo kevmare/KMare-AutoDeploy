@@ -140,8 +140,7 @@ jobs:
     docker:
       # Docker image here
       #- image: circleci/node:14.18.1
-      - image: cimg/node:16.13.1
-    resource_class: medium
+      - image: circleci/node:14.18.1
     steps:
       - checkout
       - restore_cache:
@@ -155,16 +154,12 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-            ## Checkout code from git
-            ## Restore from cache
-            ## Your job code here
 
   scan-backend:
     docker:
       # Docker image here
       #- image: circleci/node:13.8.0
-      - image: cimg/node:16.13.1
-    resource_class: medium
+      - image: circleci/node:14.18.1
     steps:
       - checkout
       - restore_cache:
