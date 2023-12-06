@@ -307,7 +307,7 @@ jobs:
   deploy-frontend:
     docker:
       # Docker image here that supports AWS CLI
-      - image: python:3.10-alpine3.16
+    - image: cimg/node:16.13.1
     steps:
       # Checkout code from git
       - checkout
@@ -315,7 +315,10 @@ jobs:
           name: Install dependencies
           command: |
             command: |
-            apk add --update --no-cache tar gzip nodejs npm aws-cli ansible curl
+            sudo apt install -y tar gzip
+      - attach_workspace: 
+          at: ~/
+      - aws-cli/setup
       - run:
           name: Get backend url
           command: |
@@ -327,8 +330,6 @@ jobs:
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             echo "${API_URL}"
             cat frontend/.env
-      - restore_cache:
-          keys: [frontend-build]
       - run:
           name: Deploy frontend objects
           command: |
@@ -347,23 +348,23 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend
-      # - build-backend
-      # - test-frontend:
-      #     requires: [build-frontend]
-      # - test-backend:
-      #     requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
-      # - deploy-infrastructure:
-      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      #     filters:
-      #       branches:
-      #         only: [master]
-      - configure-infrastructure
-          #requires: [deploy-infrastructure]
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [master]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
       - deploy-frontend:
