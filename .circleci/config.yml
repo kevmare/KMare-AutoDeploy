@@ -17,6 +17,25 @@ commands:
             aws --region us-east-1 cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow_id>>
             aws --region us-east-1 cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflow_id>>
 
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+    parameters:
+      # Add parameter here     
+    steps:
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+            SUCCESS = 1
+            if(( $SUCCESS==1 )); 
+            then
+              cd ~/project/backend
+              npm install
+              npm run migrations:revert
+            
+            fi
+
 jobs:
   build-frontend:
     docker:
@@ -203,8 +222,8 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update --no-cache tar gzip nodejs npm aws-cli ansible curl
-      - restore_cache:
-          keys: [backend-build]
+      #- restore_cache:
+          #keys: [backend-build]
       - run:
           name: Run migrations
           command: |
@@ -269,6 +288,8 @@ jobs:
             tar - czvf artifact - "${CIRCLE_WORKFLOW_ID}".tar.gz.dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+       - revert-migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
       # Here's where you will add some code to rollback on failure   
