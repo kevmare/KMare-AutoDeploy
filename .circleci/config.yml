@@ -228,7 +228,7 @@ jobs:
       # Here's where you will add some code to rollback on failure     
 
   run-migrations:
-    ddocker:
+    docker:
       - image: cimg/node:16.13.1
     resource_class: medium
     steps:
