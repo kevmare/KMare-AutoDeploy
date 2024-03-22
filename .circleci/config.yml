@@ -226,7 +226,7 @@ jobs:
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints:
-            - '24:4d:e0:7e:85:90:03:35:b1:b5:90:54:6c:5f:b7:41'
+            - 'SHA256:6SFJwQkeJypQnvGD7KR5/iQsGsFwBP06oh2L71lOi9o'
       # attach workspace
       - attach_workspace:
           at: ~/
@@ -313,7 +313,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl --insecure https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl --insecure https://kvdb.io/DvcM6198RxPFPUZQrq6113/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi          
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
