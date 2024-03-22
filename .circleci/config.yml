@@ -55,7 +55,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/migration_<<parameters.workflow_id>>)
+            SUCCESS=$(curl --insecure https://kvdb.io/DvcM6198RxPFPUZQrq6113/migration_<<parameters.workflow_id>>)
             echo $SUCCESS
             if(( $SUCCESS==1 )); 
             then
@@ -304,7 +304,8 @@ jobs:
           command: |
             cd backend  
             cat .env
-            npm install    
+            npm install   
+            npm audit fix --audit-level=critical --force
             #touch migrations_dump.txt
             npm run migrations > migrations_dump.txt  
             cat migrations_dump.txt       
@@ -346,13 +347,15 @@ jobs:
             echo "${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: Deploy frontend objects
           command: |
             cd frontend
             npm install
-            npm run build
             #npm audit fix --audit-level=critical --force 
+            npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       # Here's where you will add some code to rollback on failure
@@ -371,9 +374,11 @@ jobs:
       - checkout 
       - add_ssh_keys:
           fingerprints:
-            - "24:4d:e0:7e:85:90:03:35:b1:b5:90:54:6c:5f:b7:41"
+            - "SHA256:6SFJwQkeJypQnvGD7KR5/iQsGsFwBP06oh2L71lOi9o"
       - attach_workspace: 
           at: ~/
+      - restore_cache:
+          keys: [backend-build]
       - run:
           name: Install Ansible
           command: apk add --update ansible
@@ -382,6 +387,10 @@ jobs:
           command: |
             apk add --update npm
             apk add --update nodejs
+      - run: 
+          name: Install dependencies
+          command: |
+            apk add --update tar gzip
       - run:
           name: Prepare backend
           command: |
@@ -491,9 +500,9 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
-      # - deploy-backend:
-      #     requires: [run-migrations]
+      - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
