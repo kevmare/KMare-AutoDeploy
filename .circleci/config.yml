@@ -1,6 +1,7 @@
 version: 2.1
 
 orbs:
+  slack: circleci/slack@4.1
   aws-cli: circleci/aws-cli@2.0.6
   node: circleci/node@5.0.0
 
@@ -171,6 +172,7 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
+            exit 1
 
   deploy-infrastructure:
     docker:
