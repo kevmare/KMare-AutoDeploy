@@ -303,8 +303,8 @@ jobs:
           name: run migrations
           command: |
             cd backend  
-            cat .env
-            npm install   
+            npm install
+            cat .env   
             npm audit fix --audit-level=critical --force
             #touch migrations_dump.txt
             npm run migrations > migrations_dump.txt  
@@ -500,9 +500,9 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
+      # - deploy-frontend:
+      #     requires: [run-migrations]
+      # - deploy-backend:
+      #     requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
