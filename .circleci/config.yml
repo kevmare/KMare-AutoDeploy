@@ -267,14 +267,17 @@ jobs:
 
   run-migrations:  
     docker:
-      - image: circleci/node:14.18.1
+      - image: python:3.10-alpine3.16
     steps:
       - checkout
       - attach_workspace:
           at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update --no-cache tar gzip nodejs npm aws-cli curl
       - restore_cache:
-           keys: [backend-build]
-      - install-awscli                           
+           keys: [backend-build]                          
       - run: 
           name: save environment variables to file
           command: |
@@ -304,11 +307,10 @@ jobs:
           command: |
             cd backend  
             npm install
-            cat .env   
+            npm run build   
             npm audit fix --audit-level=critical --force
-            #touch migrations_dump.txt
             npm run migrations > migrations_dump.txt  
-            cat migrations_dump.txt       
+            cat migrations_dump.txt      
       - run:
           name: Send migration results to kvdb
           command: |
