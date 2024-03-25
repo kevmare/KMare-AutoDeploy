@@ -337,6 +337,8 @@ jobs:
           name: Install deps
           command: |
             apk add --update --no-cache tar gzip nodejs npm ansible curl aws-cli
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: Get backend url
           command: |
