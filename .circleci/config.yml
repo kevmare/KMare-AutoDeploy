@@ -325,41 +325,38 @@ jobs:
       
   deploy-frontend:
     docker:
-      - image: circleci/node:14.18.1
+      # Docker image here that supports AWS CLI
+      # - image: amazon/aws-cli
+      - image: python:3.10-alpine3.16
     steps:
+      # Checkout code from git
       - checkout
-      - install-awscli
-      - install_nodejs_latest
-      - restore_cache:
-          keys: [frontend-build]
+      - attach_workspace:
+          at: ~/
       - run:
-          name: Install dependencies
+          name: Install deps
           command: |
-            sudo apt update && sudo apt upgrade 
-            sudo apt install npm           
-            sudo apt install curl
-            sudo apt install tar
-            sudo apt install gzip
+            apk add --update --no-cache tar gzip nodejs npm ansible curl aws-cli
       - run:
           name: Get backend url
           command: |
             # your code here
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[0].Instances[0].PublicIpAddress' --filters Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7} --output text) 
+            export BACKEND_IP=$(aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filters Name=tag:aws:cloudformation:stack-name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
+            --output text)
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            echo "API_URL = ${API_URL}"
+            echo "API_URL=http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
       - run:
           name: Deploy frontend objects
           command: |
             cd frontend
-            npm install
-            #npm audit fix --audit-level=critical --force 
-            npm run build
-            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            npm install --silent
+            npm run build 2>/dev/null
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist 2>/dev/null
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      # Here's where you will add some code to rollback on failure
-      
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations:
