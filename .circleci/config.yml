@@ -69,7 +69,7 @@ commands:
 jobs:
   build-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:14.18.1
     steps:
       - checkout
       - restore_cache:
@@ -86,7 +86,7 @@ jobs:
 
   build-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:14.18.1
     steps:
       - checkout
       - restore_cache:
@@ -264,7 +264,7 @@ jobs:
   run-migrations:  
     docker:
       # Docker image here that supports NodeJS
-      - image: circleci/node:13.8.0
+      - image: circleci/node:14.18.1
     steps:
       # Checkout code from git
       - checkout
