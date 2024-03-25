@@ -31,6 +31,5 @@
 - name: start app
   become: yes
   shell: |
-    npm run migrations
     pm2 delete all
-    export $(grep TYPEORM_HOST /home/ubuntu/.env) && pm2 start npm -- start
+    pm2 start npm -- start
