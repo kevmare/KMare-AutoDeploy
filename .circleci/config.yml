@@ -274,8 +274,8 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/
-      - restore_cache:
-           keys: [backend-build]
+      # - restore_cache:
+      #      keys: [backend-build]
       - install-awscli
       - run:
           name: Install dependencies
@@ -309,10 +309,17 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            cat .env
+            export TYPEORM_HOST=$(aws cloudformation list-exports --query "Exports[?Name==\`EndpointAddress-${CIRCLE_WORKFLOW_ID:0:7}\`].Value" --output text)
+            echo $TYPEORM_HOST
+            echo TYPEORM_HOST=$TYPEORM_HOST >> ~/project/backend/.env
+            # cat .env
             npm install
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/backend
       - run:
           name: Send migration results to kvdb
           command: |
