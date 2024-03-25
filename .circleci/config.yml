@@ -422,6 +422,9 @@ jobs:
           name: Deploy backend
           no_output_timeout: 60m
           command: |
+            export TYPEORM_MIGRATIONS_DIR=./migrations
+            export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
+            export TYPEORM_MIGRATIONS=./migrations/*.ts
             cd .circleci/ansible
             echo "Contents  of the inventory.txt:"
             cat inventory.txt
