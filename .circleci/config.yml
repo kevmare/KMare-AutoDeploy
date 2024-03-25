@@ -276,7 +276,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            sudo apt install -y tar gzip curl nodejs
+            sudo apt install -y tar gzip curl
       # - attach_workspace:
       #     at: ~/
       # - run: 
