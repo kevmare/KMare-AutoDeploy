@@ -264,44 +264,46 @@ jobs:
   run-migrations:  
     docker:
       # Docker image here that supports NodeJS
-        - image: circleci/node:14.18.1
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - checkout
       # - restore_cache:
       #      keys: [backend-build]
       - install-awscli
+      - restore_cache: [backend-build]
+          keys: backend
       - run:
           name: Install dependencies
           command: |
-            sudo apt install -y tar gzip curl
-      - attach_workspace:
-          at: ~/
-      - run: 
-          name: save environment variables to file
-          command: |
-            ls
-            cd backend
-            echo NODE_ENV=production > ~/project/backend/.env
-            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ~/project/backend/.env
-            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ~/project/backend/.env
-            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> ~/project/backend/.env
-            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> ~/project/backend/.env
-            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ~/project/backend/.env
-            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ~/project/backend/.env
-            echo TYPEORM_PORT=$TYPEORM_PORT >> ~/project/backend/.env
-            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ~/project/backend/.env
-            cat ~/project/backend/.env   
+            sudo apt install -y tar gzip curl nodejs
+      # - attach_workspace:
+      #     at: ~/
+      # - run: 
+      #     name: save environment variables to file
+      #     command: |
+      #       ls
+      #       cd backend
+      #       echo NODE_ENV=production > ~/project/backend/.env
+      #       echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ~/project/backend/.env
+      #       echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ~/project/backend/.env
+      #       echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> ~/project/backend/.env
+      #       echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> ~/project/backend/.env
+      #       echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ~/project/backend/.env
+      #       echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ~/project/backend/.env
+      #       echo TYPEORM_PORT=$TYPEORM_PORT >> ~/project/backend/.env
+      #       echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ~/project/backend/.env
+      #       cat ~/project/backend/.env   
 
-            echo TYPEORM_HOST=$TYPEORM_HOST
-            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION
-            echo TYPEORM_DATABASE=$TYPEORM_DATABASE
-            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES
-            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS 
-            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR
-            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD
-            echo TYPEORM_PORT=$TYPEORM_PORT
-            echo TYPEORM_USERNAME=$TYPEORM_USERNAME             
+      #       echo TYPEORM_HOST=$TYPEORM_HOST
+      #       echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION
+      #       echo TYPEORM_DATABASE=$TYPEORM_DATABASE
+      #       echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES
+      #       echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS 
+      #       echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR
+      #       echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD
+      #       echo TYPEORM_PORT=$TYPEORM_PORT
+      #       echo TYPEORM_USERNAME=$TYPEORM_USERNAME             
       - run:
           name: Run migrations
           command: |
