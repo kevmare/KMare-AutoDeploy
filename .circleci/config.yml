@@ -271,8 +271,8 @@ jobs:
       # - restore_cache:
       #      keys: [backend-build]
       - install-awscli
-      - restore_cache: [backend-build]
-          keys: backend
+      - restore_cache:
+          keys: [backend-build]
       - run:
           name: Install dependencies
           command: |
@@ -309,6 +309,9 @@ jobs:
           command: |
             cd backend
             npm install
+            npm audit fix --force
+            npm audit fix --audit-level=critical --force
+            npm audit --audit-level=critical
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
       - persist_to_workspace:
