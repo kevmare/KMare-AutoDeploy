@@ -6,6 +6,6 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=kevin852
-      - POSTGRES_DB=udacityDB
+      - POSTGRES_DB=postgres
     ports:
       - "5432"
