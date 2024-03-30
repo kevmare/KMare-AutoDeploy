@@ -1,9 +1,6 @@
 Description: >
   Cloudfront distribution for UdaPeople.
-  # aws cloudformation deploy \ 
-  #         --template-file .circleci/files/cloudfront.yml \ 
-  #         --stack-name InitialStack \
-  #         --parameter-overrides WorkflowID=dsikokdlsnfkljdsnfkdnfklsn
+  
 Parameters:
   WorkflowID:
     Description: Unique identifier.
