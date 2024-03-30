@@ -428,7 +428,7 @@ jobs:
             cd .circleci/ansible
             echo "Contents  of the inventory.txt:"
             cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml -v
+            ansible-playbook -i inventory.txt deploy-backend.yml
             
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
@@ -450,20 +450,15 @@ jobs:
           name: Get backend url
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
-            export API_URL="http://${BACKEND_IP}:3030"
-            #echo "export API_URL=${API_URL}" >> $BASH_ENV
-            echo "API URL: ${API_URL}"
-      - run:
-          name: Backend smoke test
-          command: |
-            echo "Attempting to reach backend"
-            if curl -s ${API_URL}/api/status | grep "ok"
+            export API_URL=http://${BACKEND_IP}:3030
+            echo ${BACKEND_PUBLIC_IP}
+            echo backend-${CIRCLE_WORKFLOW_ID:0:7}
+            echo ${API_URL}
+            if curl -s $API_URL/api/status | grep "ok"
             then
-              echo "Backend UP"
-              return 0
+              exit 0
             else
-              echo "Backend TEST FAIL"
-              return 1
+             exit 1
             fi
       - run:
           name: Frontend smoke test
