@@ -432,11 +432,13 @@ jobs:
             echo "Old Wokflow ID: $OLD_WORKFLOW_ID"
             curl https://kvdb.io/DvcM6198RxPFPUZQrq6113/old_workflow_id -d "${OLD_WORKFLOW_ID}"
 
+      - run:
+          name: Update cloudfront distribution
+          command: |
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
-              --stack-name "Intialstack-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
-              --tags project=udapeople
+              --stack-name udapeople-cloudfont
 
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
