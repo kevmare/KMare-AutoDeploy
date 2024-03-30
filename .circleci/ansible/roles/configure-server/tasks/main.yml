@@ -24,18 +24,18 @@
   npm:
     name: pm2
     global: yes
-    production: yes
     state: present
+    production: yes
 
-- name: "Set environment variables"
-  become: true
-  shell: | 
-    echo "TYPEORM_CONNECTION={{ lookup('env', 'TYPEORM_CONNECTION')}}" >> /home/ubuntu/.env
-    echo "TYPEORM_ENTITIES={{ lookup('env', 'TYPEORM_ENTITIES')}}" >> /home/ubuntu/.env
-    echo "TYPEORM_HOST={{ lookup('env', 'TYPEORM_HOST')}}" >> /home/ubuntu/.env
-    echo "TYPEORM_PORT=5432" >> /home/ubuntu/.env
-    echo "TYPEORM_USERNAME={{ lookup('env', 'TYPEORM_USERNAME')}}" >> /home/ubuntu/.env
-    echo "TYPEORM_PASSWORD={{ lookup('env', 'TYPEORM_PASSWORD')}}" >> /home/ubuntu/.env
-    echo "TYPEORM_DATABASE={{ lookup('env', 'TYPEORM_DATABASE')}}" >> /home/ubuntu/.env
-    echo "TYPEORM_MIGRATIONS={{ lookup('env', 'TYPEORM_MIGRATIONS')}}" >> /home/ubuntu/.env
-    echo "TYPEORM_MIGRATIONS_DIR={{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}" >> /home/ubuntu/.env
+# - name: "Set environment variables"
+#   become: true
+#   shell: | 
+#     echo "TYPEORM_CONNECTION={{ lookup('env', 'TYPEORM_CONNECTION')}}" >> /home/ubuntu/.env
+#     echo "TYPEORM_ENTITIES={{ lookup('env', 'TYPEORM_ENTITIES')}}" >> /home/ubuntu/.env
+#     echo "TYPEORM_HOST={{ lookup('env', 'TYPEORM_HOST')}}" >> /home/ubuntu/.env
+#     echo "TYPEORM_PORT=5432" >> /home/ubuntu/.env
+#     echo "TYPEORM_USERNAME={{ lookup('env', 'TYPEORM_USERNAME')}}" >> /home/ubuntu/.env
+#     echo "TYPEORM_PASSWORD={{ lookup('env', 'TYPEORM_PASSWORD')}}" >> /home/ubuntu/.env
+#     echo "TYPEORM_DATABASE={{ lookup('env', 'TYPEORM_DATABASE')}}" >> /home/ubuntu/.env
+#     echo "TYPEORM_MIGRATIONS={{ lookup('env', 'TYPEORM_MIGRATIONS')}}" >> /home/ubuntu/.env
+#     echo "TYPEORM_MIGRATIONS_DIR={{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}" >> /home/ubuntu/.env
