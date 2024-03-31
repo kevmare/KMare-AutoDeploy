@@ -407,7 +407,7 @@ jobs:
               echo "Frontend UP"
               return 0
             else
-              echo "Frontend TEST FAIL"
+              echo "Frontend TEST FAILED"
               return 1
             fi
       - destroy-environment:
