@@ -60,7 +60,7 @@ commands:
             echo "Reverting environment: << parameters.workflow_id >>"
             SUCCESS=$(curl --insecure https://kvdb.io/DvcM6198RxPFPUZQrq6113/migration_<<parameters.workflow_id>>)
             echo $SUCCESS
-            if(( $SUCCESS==1 )); 
+            if(( $SUCCESS==1 ))
             then
               cd ~/project/backend
               npm install
