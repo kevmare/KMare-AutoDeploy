@@ -405,7 +405,7 @@ jobs:
             if curl -s ${URL} | grep "Welcome"
             then
               echo "Frontend UP"
-              return 0
+              return 1
             else
               echo "Frontend TEST FAIL"
               return 1
