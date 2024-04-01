@@ -65,7 +65,8 @@ commands:
               echo "Found"
               cd ~/project/backend
               npm install
-              npm run migrations:revert
+              npm run migrations:revert > migrations_revert_status.txt
+              cat migrations_revert_status.txt
             else
               echo "Not reverting migration: it was unsuccessful before"
             fi
