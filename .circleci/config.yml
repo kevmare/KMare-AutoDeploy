@@ -50,12 +50,14 @@ commands:
     description: Revert the last migration if successfully run in the current workflow.
     parameters: 
       workflow_id:
-        type: string       
+        type: string   
+        default: ${CIRCLE_WORKFLOW_ID:0:7}    
     steps:
       - run:
           name: Revert migrations
           when: on_fail
           command: |
+            echo "Reverting environment: << parameters.workflow_id >>"
             SUCCESS=$(curl --insecure https://kvdb.io/DvcM6198RxPFPUZQrq6113/migration_<<parameters.workflow_id>>)
             echo $SUCCESS
             if(( $SUCCESS==1 )); 
@@ -261,7 +263,7 @@ jobs:
           command: |
             cd backend
             npm install
-            npm run build
+            #npm run build
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
       - persist_to_workspace:
@@ -276,6 +278,7 @@ jobs:
               curl --insecure https://kvdb.io/DvcM6198RxPFPUZQrq6113/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             else
               echo No migrations required
+              curl --insecure https://kvdb.io/DvcM6198RxPFPUZQrq6113/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi          
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
